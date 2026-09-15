@@ -27,7 +27,11 @@ body { margin: 0; min-width: 320px; background: var(--background); color: var(--
 button, input, textarea { font: inherit; }
 button { cursor: pointer; }
 
-.app-shell { min-height: 100vh; background: radial-gradient(circle at 52% -10%, rgba(103,79,188,.12), transparent 34%), var(--background); letter-spacing: -.01em; }
+.app-shell { min-height: 100vh; position: relative; isolation: isolate; overflow: hidden; background: linear-gradient(135deg, rgba(4,10,30,.95), rgba(9,19,48,.86)), url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pexels-tara-winstead-8386437-klr8C6iejNPNZjJ5IaPtHu0XcPBJp6.jpg") center / cover fixed, var(--background); letter-spacing: -.01em; }
+.app-shell::before { content:""; position:fixed; inset:-18%; z-index:-1; pointer-events:none; background: linear-gradient(115deg, rgba(0,174,255,.22), rgba(122,74,255,.2)), url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pexels-merlin-14314636-kgb12W3eFCT0QzLcLElh4Do63ednlG.jpg") center / cover, radial-gradient(circle at 18% 18%, rgba(0,216,255,.27), transparent 24%), radial-gradient(circle at 82% 12%, rgba(146,83,255,.27), transparent 25%), radial-gradient(circle at 72% 82%, rgba(0,255,174,.16), transparent 25%); filter: blur(20px); opacity:.75; animation: ambient-drift 16s ease-in-out infinite alternate; }
+.app-shell::after { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.22; background-image: linear-gradient(rgba(150,220,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(150,220,255,.08) 1px, transparent 1px); background-size:72px 72px; mask-image: linear-gradient(to bottom, black, transparent 78%); animation: grid-shift 22s linear infinite; }
+@keyframes ambient-drift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(4%, 3%, 0) scale(1.12); } }
+@keyframes grid-shift { from { transform: translateY(0); } to { transform: translateY(72px); } }
 .app-shell.light-mode { --background:#f4f5f9; --foreground:#171b27; --surface:#fff; --surface-2:#f8f9fc; --surface-3:#eef0f7; --border:#dfe3ec; --border-soft:rgba(20,25,40,.08); --muted:#697285; --faint:#9aa2b1; background: var(--background); }
 .topbar { height: 64px; border-bottom: 1px solid var(--border-soft); display:flex; align-items:center; justify-content:space-between; padding: 0 28px; background: rgba(9,11,16,.72); backdrop-filter: blur(18px); position: sticky; top:0; z-index:20; }
 .light-mode .topbar { background: rgba(244,245,249,.78); }
