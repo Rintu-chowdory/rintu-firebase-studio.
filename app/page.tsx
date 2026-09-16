@@ -61,11 +61,30 @@ export default function Page() {
   const [isCreating, setIsCreating] = useState(false)
   const [sent, setSent] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [agentOpen, setAgentOpen] = useState(false)
+  const [agentPrompt, setAgentPrompt] = useState('')
+  const [agentReply, setAgentReply] = useState('')
+  const [agentLoading, setAgentLoading] = useState(false)
 
   const filteredProjects = useMemo(
     () => projects.filter((project) => project.name.toLowerCase().includes(query.toLowerCase())),
     [query],
   )
+
+  async function askAgent() {
+    if (!agentPrompt.trim() || agentLoading) return
+    setAgentLoading(true)
+    setAgentReply('')
+    try {
+      const response = await fetch('/api/agent', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt: agentPrompt, project: activeProject }) })
+      const data = await response.json()
+      setAgentReply(data.text ?? 'I could not complete that request.')
+    } catch {
+      setAgentReply('The agent is unavailable right now. Please try again in a moment.')
+    } finally {
+      setAgentLoading(false)
+    }
+  }
 
   function submitPrompt() {
     if (!prompt.trim() || isCreating) return
@@ -88,6 +107,7 @@ export default function Page() {
           <span className="beta-pill">BETA</span>
         </div>
         <div className="topbar-actions">
+          <button className="agent-launcher" onClick={() => setAgentOpen(!agentOpen)}><Bot size={15} /> Personal agent</button>
           <button className="workspace-switcher" aria-label="Switch workspace"><span className="avatar">RC</span><span>Rintu&apos;s workspace</span><ChevronDown size={14} /></button>
           <button className="icon-button" aria-label="Toggle theme" onClick={() => setIsLight(!isLight)}>{isLight ? <Moon size={17} /> : <Sun size={17} />}</button>
           <button className="icon-button notification-button" aria-label="Notifications"><Bell size={17} /><i /></button>
@@ -120,6 +140,13 @@ export default function Page() {
           </> : <div className="empty-tab"><div className="empty-icon"><Code2 size={24} /></div><h2>{activeTab}</h2><p>Your {activeTab.toLowerCase()} will appear here.</p><button className="primary-button" onClick={() => setActiveTab('Overview')}>Back to overview</button></div>}
         </section>
       </div>
+
+      {agentOpen && <section className="agent-panel" aria-label="Personal build agent">
+        <div className="agent-panel-header"><div><span className="eyebrow"><Bot size={13} /> PERSONAL AGENT</span><h2>Build with a partner</h2><p>Ask for architecture, Firebase setup, or a clear build plan.</p></div><button className="icon-button subtle" aria-label="Close personal agent" onClick={() => setAgentOpen(false)}><X size={17} /></button></div>
+        <div className="agent-suggestions">{['Plan my Firebase architecture', 'Add auth and protected routes', 'Review this project for bugs'].map((item) => <button key={item} onClick={() => setAgentPrompt(item)}>{item}</button>)}</div>
+        {agentReply && <div className="agent-reply">{agentReply}</div>}
+        <div className="agent-input"><textarea value={agentPrompt} onChange={(event) => setAgentPrompt(event.target.value)} placeholder="What should we build next?" rows={3} /><button className="send-button" onClick={askAgent} disabled={agentLoading} aria-label="Ask personal agent">{agentLoading ? <span className="spinner" /> : <Send size={16} />}</button></div>
+      </section>}
     </main>
   )
 }
