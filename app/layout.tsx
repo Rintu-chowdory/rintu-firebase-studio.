@@ -1,27 +1,23 @@
-import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Firebase Studio | Build with AI',
-  description: 'Build, iterate, and deploy full-stack applications with Firebase Studio.',
-  generator: 'Firebase Studio',
+  title: 'Rintu Studio: build and deploy console',
+  description:
+    'A live console for Rintu’s repositories, deployments and workflow runs, read from the GitHub API.',
+  icons: { icon: '/icon.svg' },
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'dark light',
-  themeColor: '#090b10',
+  themeColor: '#08090d',
   width: 'device-width',
   initialScale: 1,
 }
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="antialiased">
-        {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
